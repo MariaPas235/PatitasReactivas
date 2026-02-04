@@ -1,0 +1,71 @@
+{
+  "animals": [
+    {
+      "id": "a1",
+      "name": "Luna",
+      "species": "Perro",
+      "age": 3,
+      "vaccinated": true,
+      "description": "Cruzada, muy sociable.",
+      "imageUrl": "https://example.com/luna.jpg"
+    },
+    {
+      "id": "a2",
+      "name": "Milo",
+      "species": "Gato",
+      "age": 2,
+      "vaccinated": false,
+      "description": "Tímido al principio.",
+      "imageUrl": "https://example.com/milo.jpg"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "vet1@patitas.com",
+      "name": "Dra. Rivera",
+      "numberVet": "VET-1001",
+      "telefono": "600123123",
+      "password": "contraseña123",
+      "role": "veterinary",
+      "animals": [
+        "a1",
+        "a2"
+      ]
+    },
+    {
+      "id": 2,
+      "email": "aux1@patitas.com",
+      "name": "Ana López",
+      "numberVet": "AUX-2001",
+      "telefono": "600456456",
+      "password": "contraseña456",
+      "role": "auxiliary",
+      "animals": [
+        "a1"
+      ]
+    },
+    {
+      "id": 3,
+      "email": "hola@gmail.com",
+      "name": "hola",
+      "telefono": "546371827",
+      "password": "1234",
+      "numberVet": "1234",
+      "role": "auxiliary",
+      "animals": [],
+      "passwordHash": "$2b$10$lPVRM/M7J8wasyxlig67SeJnBHAgNQGKytcYMtLrcm/sqzYcvD3pu"
+    },
+    {
+      "id": 4,
+      "email": "hola2@gmail.com",
+      "name": "hola",
+      "telefono": "5",
+      "password": "2345",
+      "numberVet": "3",
+      "role": "veterinary",
+      "animals": [],
+      "passwordHash": "$2b$10$Md3AWiWdAUesEdqzyORCbO.E94DTZc7ob2LnBAPSM6JuzS00bqd9a"
+    }
+  ]
+}
