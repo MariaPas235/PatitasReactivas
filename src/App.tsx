@@ -1,20 +1,42 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AuthPageRegistro from "./pages/Auth/AuthPageRegistro";
-import AuthPageLogin from "./pages/Auth/AuthPageLogin";
+import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
+import AddAnimalPage from "./pages/AddAnimal/AddAnimalPage";
+import ProfilePage from "./pages/Profile/ProfilePage";
+import AuthPageLogin from "./pages/Auth/AuthPageLogin";
+import AuthPageRegistro from "./pages/Auth/AuthPageRegistro";
+import { authService } from "./services/authService";
 
-function App() {
+const App = () => {
+  const session = authService.getSession();
+
+  if (!session) {
+    return (
+      <Router>
+        <Routes>
+          <Route path="/login" element={<AuthPageLogin />} />
+          <Route path="/register" element={<AuthPageRegistro />} />
+          <Route path="*" element={<AuthPageLogin />} />
+        </Routes>
+      </Router>
+    );
+  }
+
   return (
-    <BrowserRouter>
+    <Router>
+      <nav style={{ padding: "1rem", backgroundColor: "#eee", display: "flex", gap: "1rem" }}>
+        <NavLink to="/dashboard" style={({ isActive }) => ({ fontWeight: isActive ? "bold" : "normal" })}>Mascotas</NavLink>
+        <NavLink to="/add" style={({ isActive }) => ({ fontWeight: isActive ? "bold" : "normal" })}>Nuevo</NavLink>
+        <NavLink to="/profile" style={({ isActive }) => ({ fontWeight: isActive ? "bold" : "normal" })}>Perfil</NavLink>
+      </nav>
+
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/register" element={<AuthPageRegistro />} />
-        <Route path="/login" element={<AuthPageLogin />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="*" element={<h1>Página no encontrada</h1>} />
+        <Route path="/add" element={<AddAnimalPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="*" element={<DashboardPage />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
-}
+};
 
 export default App;

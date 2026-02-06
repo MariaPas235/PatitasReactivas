@@ -17,6 +17,24 @@
       "vaccinated": false,
       "description": "Tímido al principio.",
       "imageUrl": "https://example.com/milo.jpg"
+    },
+    {
+      "id": "a21",
+      "name": "aby",
+      "species": "bi",
+      "age": 1,
+      "vaccinated": true,
+      "description": "srg",
+      "imageUrl": "https://www.tiendanimal.es/articulos/wp-content/uploads/2024/04/bichon-maltes-cuidados-caracteristicas.jpg"
+    },
+    {
+      "id": "a5",
+      "name": "franfu",
+      "species": "humano",
+      "age": 4,
+      "vaccinated": true,
+      "description": "loco",
+      "imageUrl": "https://media.licdn.com/dms/image/v2/D4D03AQHrozSuFNRvDA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1706897417776?e=2147483647&v=beta&t=8y07nesk4XJAEA4JxvSlmzzAsdaBG5EyZS-iKb1NNfQ"
     }
   ],
   "users": [
@@ -29,8 +47,24 @@
       "password": "contraseña123",
       "role": "veterinary",
       "animals": [
-        "a1",
-        "a2"
+        {
+          "id": "a1",
+          "name": "Luna",
+          "species": "Perro",
+          "age": 3,
+          "vaccinated": true,
+          "description": "Cruzada, muy sociable.",
+          "imageUrl": "https://example.com/luna.jpg"
+        },
+        {
+          "id": "a2",
+          "name": "Milo",
+          "species": "Gato",
+          "age": 2,
+          "vaccinated": false,
+          "description": "Tímido al principio.",
+          "imageUrl": "https://example.com/milo.jpg"
+        }
       ]
     },
     {
@@ -42,7 +76,15 @@
       "password": "contraseña456",
       "role": "auxiliary",
       "animals": [
-        "a1"
+        {
+          "id": "a1",
+          "name": "Luna",
+          "species": "Perro",
+          "age": 3,
+          "vaccinated": true,
+          "description": "Cruzada, muy sociable.",
+          "imageUrl": "https://example.com/luna.jpg"
+        }
       ]
     },
     {
@@ -53,7 +95,26 @@
       "password": "1234",
       "numberVet": "1234",
       "role": "auxiliary",
-      "animals": [],
+      "animals": [
+        {
+          "id": "a21",
+          "name": "aby",
+          "species": "bi",
+          "age": 1,
+          "vaccinated": true,
+          "description": "srg",
+          "imageUrl": "https://www.tiendanimal.es/articulos/wp-content/uploads/2024/04/bichon-maltes-cuidados-caracteristicas.jpg"
+        },
+        {
+          "id": "a5",
+          "name": "franfu",
+          "species": "humano",
+          "age": 4,
+          "vaccinated": true,
+          "description": "loco",
+          "imageUrl": "https://media.licdn.com/dms/image/v2/D4D03AQHrozSuFNRvDA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1706897417776?e=2147483647&v=beta&t=8y07nesk4XJAEA4JxvSlmzzAsdaBG5EyZS-iKb1NNfQ"
+        }
+      ],
       "passwordHash": "$2b$10$lPVRM/M7J8wasyxlig67SeJnBHAgNQGKytcYMtLrcm/sqzYcvD3pu"
     },
     {

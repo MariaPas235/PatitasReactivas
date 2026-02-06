@@ -51,7 +51,7 @@ class AuthService {
     return !!this.getSession()?.token;
   }
 
-  private saveSession(auth: AuthResponse) {
+   saveSession(auth: AuthResponse) {
     localStorage.setItem("auth", JSON.stringify(auth));
   }
 }

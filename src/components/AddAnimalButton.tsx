@@ -1,26 +1,34 @@
+import { useState } from "react";
 import type { Animal } from "../types/Animals";
+import { AnimalForm } from "./AnimalForm";
+import { animalService } from "../services/animalService";
+
 
 type Props = {
   onAdd: (animal: Animal) => void;
 };
 
-const AddAnimalButton = ({ onAdd }: Props) => {
-  const handleClick = () => {
-    const newAnimal: Animal = {
-      id: Date.now().toString(),
-      name: "Nueva mascota",
-      species: "Perro",
-      age: 1,
-      vaccinated: false,
-    };
-    onAdd(newAnimal);
-  };
+export const AddAnimalButton = ({ onAdd }: Props) => {
+  const [showForm, setShowForm] = useState(false);
 
-  return (
-    <button onClick={handleClick} style={{ padding: "0.5rem 1rem" }}>
-      Añadir mascota
-    </button>
-  );
+const handleAddAnimal = async (animal: Omit<Animal, "id">) => {
+  const saved = await animalService.addAnimal(animal);
+  onAdd(saved);
+  setShowForm(false);
 };
 
-export default AddAnimalButton;
+  return (
+    <>
+      <button onClick={() => setShowForm(true)}>
+        ➕ Añadir mascota
+      </button>
+
+      {showForm && (
+        <AnimalForm
+          onSubmit={handleAddAnimal}
+          onCancel={() => setShowForm(false)}
+        />
+      )}
+    </>
+  );
+};

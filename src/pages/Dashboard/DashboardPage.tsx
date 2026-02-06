@@ -1,40 +1,35 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { authService } from "../../services/authService";
+import { animalService } from "../../services/animalService";
+import { AnimalCard } from "../../components/AnimalCard";
 import type { Animal } from "../../types/Animals";
-import AddAnimalButton from "../../components/AddAnimalButton";
-import AnimalCard from "../../components/AnimalCard";
 
 const DashboardPage = () => {
-  const navigate = useNavigate();
   const session = authService.getSession();
+  const [animals, setAnimals] = useState<Animal[]>([]);
 
-  // Hook siempre llamado en el mismo orden
-  const [animals, setAnimals] = useState<Animal[]>(session?.user.animals || []);
-
-  // Redirige si no hay sesión
   useEffect(() => {
-    if (!session) {
-      navigate("/login");
-    }
-  }, [navigate, session]);
+    if (!session) return;
+    animalService.getUserAnimals(session.user.id).then(setAnimals).catch(console.error);
+  }, [session]);
 
-  const handleAddAnimal = (animal: Animal) => {
-    setAnimals((prev) => [...prev, animal]);
+  if (!session) return <Navigate to="/login" replace />;
+
+  const handleDeleted = (id: string) => {
+    setAnimals((prev) => prev.filter((a) => a.id !== id));
   };
 
-  return session ? (
+  return (
     <div style={{ padding: "2rem" }}>
-      <h1>Dashboard</h1>
-      <AddAnimalButton onAdd={handleAddAnimal} />
-
-      <div style={{ display: "flex", flexWrap: "wrap", marginTop: "1rem" }}>
+      <h1>Mascotas de {session.user.name}</h1>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "1rem" }}>
         {animals.map((animal) => (
-          <AnimalCard key={animal.id} animal={animal} />
+          <AnimalCard key={animal.id} animal={animal} onDeleted={handleDeleted} />
         ))}
       </div>
     </div>
-  ) : null;
+  );
 };
 
 export default DashboardPage;
