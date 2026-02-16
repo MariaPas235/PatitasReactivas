@@ -1,0 +1,40 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  gap: 1rem;
+}
+
+.cat {
+  font-size: 3rem;
+  animation: walk 1s infinite linear;
+}
+
+.loading-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #555;
+  animation: blink 1.5s infinite;
+}
+
+/* Animación de caminar (movimiento horizontal suave) */
+@keyframes walk {
+  0% {
+    transform: translateX(-10px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(-10px);
+  }
+}
+
+/* Animación del texto */
+@keyframes blink {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}

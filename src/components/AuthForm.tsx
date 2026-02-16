@@ -54,11 +54,14 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "400px" }}
+    >
       <h2>{mode === "login" ? "Iniciar sesión" : "Registro"}</h2>
 
-      <label>
-        Email
+      <div>
+        <label>Email</label>
         <input
           type="email"
           name="email"
@@ -66,12 +69,12 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
           onChange={handleChange}
           required
         />
-      </label>
+      </div>
 
       {mode === "register" && (
         <>
-          <label>
-            Nombre
+          <div>
+            <label>Nombre</label>
             <input
               type="text"
               name="name"
@@ -79,10 +82,10 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
               onChange={handleChange}
               required
             />
-          </label>
+          </div>
 
-          <label>
-            Nº Colegiado
+          <div>
+            <label>Nº Colegiado</label>
             <input
               type="text"
               name="numberVet"
@@ -90,10 +93,10 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
               onChange={handleChange}
               required
             />
-          </label>
+          </div>
 
-          <label>
-            Teléfono
+          <div>
+            <label>Teléfono</label>
             <input
               type="text"
               name="telefono"
@@ -101,10 +104,10 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
               onChange={handleChange}
               required
             />
-          </label>
+          </div>
 
-          <label>
-            Rol
+          <div>
+            <label>Rol</label>
             <select
               name="role"
               value={form.role}
@@ -115,12 +118,12 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
               <option value="auxiliary">Auxiliar</option>
               <option value="ray-x">Rayos X</option>
             </select>
-          </label>
+          </div>
         </>
       )}
 
-      <label>
-        Contraseña
+      <div>
+        <label>Contraseña</label>
         <input
           type="password"
           name="password"
@@ -128,7 +131,7 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
           onChange={handleChange}
           required
         />
-      </label>
+      </div>
 
       <button type="submit" disabled={loading}>
         {mode === "login" ? "Entrar" : "Registrarse"}

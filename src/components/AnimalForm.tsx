@@ -3,8 +3,8 @@ import type { Animal } from "../types/Animals";
 
 type Props = {
   onSubmit: (animal: Omit<Animal, "id">) => void;
-  onCancel?: () => void; // ✅ añadimos esta prop opcional
-  initial?: Omit<Animal, "id">; // datos iniciales para editar
+  onCancel?: () => void;
+  initial?: Omit<Animal, "id">;
 };
 
 export const AnimalForm = ({ onSubmit, onCancel, initial }: Props) => {
@@ -21,20 +21,72 @@ export const AnimalForm = ({ onSubmit, onCancel, initial }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "400px" }}>
-      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nombre" required />
-      <input value={species} onChange={(e) => setSpecies(e.target.value)} placeholder="Especie" required />
-      <input type="number" value={age} onChange={(e) => setAge(Number(e.target.value))} placeholder="Edad" required />
-      <label>
-        <input type="checkbox" checked={vaccinated} onChange={(e) => setVaccinated(e.target.checked)} />
-        Vacunado
-      </label>
-      <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descripción" />
-      <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="URL imagen" />
+    <form
+      onSubmit={handleSubmit}
+      style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "400px" }}
+    >
+      <div>
+        <label>Nombre</label>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Especie</label>
+        <input
+          value={species}
+          onChange={(e) => setSpecies(e.target.value)}
+          required
+        />
+      </div>
+
+      <div>
+        <label>Edad</label>
+        <input
+          type="number"
+          value={age}
+          onChange={(e) => setAge(Number(e.target.value))}
+          required
+        />
+      </div>
+
+      <div>
+        <label>
+          <input
+            type="checkbox"
+            checked={vaccinated}
+            onChange={(e) => setVaccinated(e.target.checked)}
+          />
+          Vacunado
+        </label>
+      </div>
+
+      <div>
+        <label>Descripción</label>
+        <input
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </div>
+
+      <div>
+        <label>URL imagen</label>
+        <input
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+        />
+      </div>
 
       <div style={{ display: "flex", gap: "1rem" }}>
         <button type="submit">Guardar</button>
-        {onCancel && <button type="button" onClick={onCancel}>Cancelar</button>}
+        {onCancel && (
+          <button type="button" onClick={onCancel}>
+            Cancelar
+          </button>
+        )}
       </div>
     </form>
   );
