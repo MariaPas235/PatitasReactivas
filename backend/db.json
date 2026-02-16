@@ -19,22 +19,40 @@
       "imageUrl": "https://example.com/milo.jpg"
     },
     {
-      "id": "a21",
-      "name": "aby",
-      "species": "bi",
+      "id": "a6",
+      "name": "habichuela",
+      "species": "eijgjnegr",
       "age": 1,
       "vaccinated": true,
-      "description": "srg",
-      "imageUrl": "https://www.tiendanimal.es/articulos/wp-content/uploads/2024/04/bichon-maltes-cuidados-caracteristicas.jpg"
+      "description": "erjngoerg",
+      "imageUrl": ""
+    },
+    {
+      "id": "a4",
+      "name": "jusn ",
+      "species": "trngitg",
+      "age": 1,
+      "vaccinated": true,
+      "description": "tgtr",
+      "imageUrl": ""
     },
     {
       "id": "a5",
-      "name": "franfu",
-      "species": "humano",
-      "age": 4,
+      "name": "marua",
+      "species": "iuhiug",
+      "age": 1,
       "vaccinated": true,
-      "description": "loco",
-      "imageUrl": "https://media.licdn.com/dms/image/v2/D4D03AQHrozSuFNRvDA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1706897417776?e=2147483647&v=beta&t=8y07nesk4XJAEA4JxvSlmzzAsdaBG5EyZS-iKb1NNfQ"
+      "description": "kubgiug",
+      "imageUrl": ""
+    },
+    {
+      "id": "a6",
+      "name": "abbys",
+      "species": "eijgjnegr",
+      "age": 1,
+      "vaccinated": true,
+      "description": "erjngoerg",
+      "imageUrl": ""
     }
   ],
   "users": [
@@ -88,34 +106,21 @@
       ]
     },
     {
-      "id": 3,
-      "email": "hola@gmail.com",
-      "name": "hola",
+      "name": "holiwi",
       "telefono": "546371827",
-      "password": "1234",
       "numberVet": "1234",
-      "role": "auxiliary",
+      "id": 3,
       "animals": [
         {
-          "id": "a21",
-          "name": "aby",
-          "species": "bi",
+          "id": "a5",
+          "name": "marua",
+          "species": "iuhiug",
           "age": 1,
           "vaccinated": true,
-          "description": "srg",
-          "imageUrl": "https://www.tiendanimal.es/articulos/wp-content/uploads/2024/04/bichon-maltes-cuidados-caracteristicas.jpg"
-        },
-        {
-          "id": "a5",
-          "name": "franfu",
-          "species": "humano",
-          "age": 4,
-          "vaccinated": true,
-          "description": "loco",
-          "imageUrl": "https://media.licdn.com/dms/image/v2/D4D03AQHrozSuFNRvDA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1706897417776?e=2147483647&v=beta&t=8y07nesk4XJAEA4JxvSlmzzAsdaBG5EyZS-iKb1NNfQ"
+          "description": "kubgiug",
+          "imageUrl": ""
         }
-      ],
-      "passwordHash": "$2b$10$lPVRM/M7J8wasyxlig67SeJnBHAgNQGKytcYMtLrcm/sqzYcvD3pu"
+      ]
     },
     {
       "id": 4,
@@ -127,6 +132,36 @@
       "role": "veterinary",
       "animals": [],
       "passwordHash": "$2b$10$Md3AWiWdAUesEdqzyORCbO.E94DTZc7ob2LnBAPSM6JuzS00bqd9a"
+    },
+    {
+      "id": 5,
+      "email": "prueba2@gmail.com",
+      "name": "Mariquilla",
+      "telefono": "645362644",
+      "numberVet": "2",
+      "role": "veterinary",
+      "animals": [],
+      "passwordHash": "$2b$10$keB95pmQ6OUrYygDjRFFGuqEdyYMXXE3RUY96VH0Dkc/oC/1HS4rm"
+    },
+    {
+      "id": 6,
+      "email": "prueba3@gmail.com",
+      "name": "Mariota",
+      "telefono": "645363636",
+      "numberVet": "3",
+      "role": "veterinary",
+      "animals": [
+        {
+          "id": "a6",
+          "name": "habichuela",
+          "species": "eijgjnegr",
+          "age": 1,
+          "vaccinated": true,
+          "description": "erjngoerg",
+          "imageUrl": ""
+        }
+      ],
+      "passwordHash": "$2b$10$fF1dDqgtLhimLAJZaC7s0OPMPcICaOLGGyoPu2P90xWr1/dkx1LPy"
     }
   ]
 }

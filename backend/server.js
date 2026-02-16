@@ -76,14 +76,29 @@ app.post("/auth/login", async (req, res) => {
   const user = db.get("users").find({ email }).value();
   if (!user) return res.status(401).json({ message: "Credenciales inválidas" });
 
-  const ok = await bcrypt.compare(password, user.passwordHash);
-  if (!ok) return res.status(401).json({ message: "Credenciales inválidas" });
+  // Verificar que el usuario tiene passwordHash
+  if (!user.passwordHash) {
+    return res.status(401).json({ message: "Credenciales inválidas" });
+  }
+
+  try {
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    if (!ok) return res.status(401).json({ message: "Credenciales inválidas" });
+  } catch (err) {
+    console.error("Error en bcrypt.compare:", err);
+    return res.status(401).json({ message: "Credenciales inválidas" });
+  }
 
   const token = signToken(user);
 
+  // No devolver password en la respuesta, solo el usuario sin ese campo
+  const userResponse = { ...user };
+  delete userResponse.passwordHash;
+  delete userResponse.password;
+
   return res.json({
     token,
-    user: { ...user, password: user.password }, // devuelve password plano por ahora
+    user: userResponse,
   });
 });
 
@@ -157,6 +172,66 @@ app.delete("/animals/:id", (req, res) => {
   return res.json({ message: "Animal eliminado" });
 });
 
+// --- ACTUALIZAR ANIMAL ---
+app.put("/animals/:id", (req, res) => {
+  const { id } = req.params;
+  const { name, species, age, vaccinated, description, imageUrl } = req.body ?? {};
+
+  const animal = db.get("animals").find({ id }).value();
+  if (!animal) return res.status(404).json({ message: "Animal no encontrado" });
+
+  const updatedAnimal = {
+    id,
+    name: name ?? animal.name,
+    species: species ?? animal.species,
+    age: age ?? animal.age,
+    vaccinated: vaccinated ?? animal.vaccinated,
+    description: description ?? animal.description,
+    imageUrl: imageUrl ?? animal.imageUrl,
+  };
+
+  // actualizar colección global
+  db.get("animals").find({ id }).assign(updatedAnimal).write();
+
+  // actualizar cualquier animal embebido dentro de users[].animals
+  db.get("users")
+    .value()
+    .forEach((user) => {
+      if (!Array.isArray(user.animals)) return;
+
+      // Resolver cada entrada: si es string (id) intentamos obtener el objeto global,
+      // si es objeto lo usamos tal cual. Filtramos nulls.
+      const resolved = user.animals
+        .map((a) => {
+          if (!a) return null;
+          if (typeof a === "object") return a;
+          if (typeof a === "string") {
+            return db.get("animals").find({ id: a }).value() || null;
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      // Reemplazar la entrada que coincide con el id por la versión actualizada
+      const replaced = resolved.map((a) => (a.id === id ? updatedAnimal : a));
+
+      // Deduplicar por id, preservando el orden (evita repetir la misma mascota varias veces)
+      const seen = new Set();
+      const dedup = [];
+      replaced.forEach((a) => {
+        if (!a || !a.id) return;
+        if (seen.has(a.id)) return;
+        seen.add(a.id);
+        dedup.push(a);
+      });
+
+      user.animals = dedup;
+      db.get("users").find({ id: user.id }).assign(user).write();
+    });
+
+  return res.json(updatedAnimal);
+});
+
 // --- GET usuario por ID ---
 app.get("/users/:id", (req, res) => {
   const { id } = req.params;
@@ -176,7 +251,29 @@ app.get("/test/animals", (req, res) => {
   res.json(animals);
 });
 
-// json-server router para CRUD general
+// --- ACTUALIZAR USUARIO ---
+app.put("/users/:id", (req, res) => {
+  const { id } = req.params;
+  const { name, telefono, numberVet } = req.body ?? {};
+
+  const user = db.get("users").find({ id: parseInt(id) }).value();
+  if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+  const updated = {
+    ...user,
+    name: name ?? user.name,
+    telefono: telefono ?? user.telefono,
+    numberVet: numberVet ?? user.numberVet,
+  };
+
+  db.get("users").find({ id: user.id }).assign(updated).write();
+
+  // También actualizar animals embebidos si es necesario: aquí no cambiamos animals
+
+  return res.json(updated);
+});
+
+// json-server router para CRUD general (debe ir después de nuestras rutas personalizadas)
 app.use(router);
 
 // Levantar servidor

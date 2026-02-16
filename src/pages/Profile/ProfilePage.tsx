@@ -10,10 +10,17 @@ const ProfilePage = () => {
   if (!session) return null;
 
   const handleSave = () => {
-    // Simulación: solo guardamos en localStorage
-    const updatedUser = { ...session.user, name, telefono, numberVet };
-    authService.saveSession({ token: session.token, user: updatedUser });
-    alert("Perfil actualizado");
+    // Persistir en backend y actualizar sesión
+    const updatedData = { name, telefono, numberVet };
+    authService.updateUser(session.user.id, updatedData)
+      .then((updatedUser) => {
+        authService.saveSession({ token: session.token, user: updatedUser });
+        alert("Perfil actualizado");
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Error actualizando perfil");
+      });
   };
 
   return (

@@ -14,7 +14,12 @@ const AuthPageLogin = () => {
     }
   };
 
-  return <AuthForm mode="login" onSubmit={handleLogin} />;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "1rem", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
+      <AuthForm mode="login" onSubmit={handleLogin} />
+      <p>¿No tienes cuenta? <button onClick={() => navigate("/register")} style={{ background: "none", border: "none", color: "#1976d2", cursor: "pointer", textDecoration: "underline" }}>Regístrate aquí</button></p>
+    </div>
+  );
 };
 
 export default AuthPageLogin;

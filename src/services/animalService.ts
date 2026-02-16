@@ -32,6 +32,21 @@ class AnimalService {
     });
     if (!res.ok) throw new Error("Error eliminando animal");
   }
+
+  async updateAnimal(id: string, animal: Omit<Animal, "id">): Promise<Animal> {
+    const session = authService.getSession();
+    if (!session) throw new Error("No hay sesión");
+
+    const res = await fetch(`${API_URL}/animals/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...animal, userId: session.user.id }),
+    });
+
+    if (!res.ok) throw new Error("Error actualizando animal");
+
+    return res.json();
+  }
 }
 
 export const animalService = new AnimalService();

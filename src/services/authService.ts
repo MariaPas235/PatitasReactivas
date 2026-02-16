@@ -1,6 +1,7 @@
 import type { AuthResponse, User } from "../types/Auth";
 
 const API_URL = "http://localhost:3000/auth"; // tu backend
+const API_BASE = "http://localhost:3000";
 
 type LoginPayload = {
   email: string;
@@ -40,6 +41,7 @@ class AuthService {
 
   logout() {
     localStorage.removeItem("auth");
+    this.notifySubscribers(null);
   }
 
   getSession(): AuthResponse | null {
@@ -53,6 +55,45 @@ class AuthService {
 
    saveSession(auth: AuthResponse) {
     localStorage.setItem("auth", JSON.stringify(auth));
+    this.notifySubscribers(auth);
+  }
+
+  // --- simple subscription API so UI can react to session changes ---
+  private subscribers: Array<(auth: AuthResponse | null) => void> = [];
+
+  subscribe(cb: (auth: AuthResponse | null) => void) {
+    this.subscribers.push(cb);
+    // immediately call with current value
+    try {
+      cb(this.getSession());
+    } catch (e) {
+      console.error("Error in auth subscriber callback", e);
+    }
+    return () => {
+      this.subscribers = this.subscribers.filter((s) => s !== cb);
+    };
+  }
+
+  private notifySubscribers(auth: AuthResponse | null) {
+    this.subscribers.forEach((cb) => {
+      try {
+        cb(auth);
+      } catch (e) {
+        console.error("Error in auth subscriber callback", e);
+      }
+    });
+  }
+
+  async updateUser(userId: number, data: Partial<User>): Promise<User> {
+    const res = await fetch(`${API_BASE}/users/${userId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) throw new Error("Error actualizando usuario");
+
+    return res.json();
   }
 }
 

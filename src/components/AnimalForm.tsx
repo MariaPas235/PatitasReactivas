@@ -4,15 +4,16 @@ import type { Animal } from "../types/Animals";
 type Props = {
   onSubmit: (animal: Omit<Animal, "id">) => void;
   onCancel?: () => void; // ✅ añadimos esta prop opcional
+  initial?: Omit<Animal, "id">; // datos iniciales para editar
 };
 
-export const AnimalForm = ({ onSubmit, onCancel }: Props) => {
-  const [name, setName] = useState("");
-  const [species, setSpecies] = useState("");
-  const [age, setAge] = useState<number>(0);
-  const [vaccinated, setVaccinated] = useState(false);
-  const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+export const AnimalForm = ({ onSubmit, onCancel, initial }: Props) => {
+  const [name, setName] = useState(() => initial?.name ?? "");
+  const [species, setSpecies] = useState(() => initial?.species ?? "");
+  const [age, setAge] = useState<number>(() => initial?.age ?? 0);
+  const [vaccinated, setVaccinated] = useState(() => initial?.vaccinated ?? false);
+  const [description, setDescription] = useState(() => initial?.description ?? "");
+  const [imageUrl, setImageUrl] = useState(() => initial?.imageUrl ?? "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
