@@ -53,6 +53,15 @@
       "vaccinated": true,
       "description": "erjngoerg",
       "imageUrl": ""
+    },
+    {
+      "id": "a7",
+      "name": "pepa",
+      "species": "ninfa ",
+      "age": 3,
+      "vaccinated": false,
+      "description": "piopio",
+      "imageUrl": "https://gaherproga.com/img/cms/Cacatua2.jpg"
     }
   ],
   "users": [
@@ -159,6 +168,15 @@
           "vaccinated": true,
           "description": "erjngoerg",
           "imageUrl": ""
+        },
+        {
+          "id": "a7",
+          "name": "pepa",
+          "species": "ninfa ",
+          "age": 3,
+          "vaccinated": false,
+          "description": "piopio",
+          "imageUrl": "https://gaherproga.com/img/cms/Cacatua2.jpg"
         }
       ],
       "passwordHash": "$2b$10$fF1dDqgtLhimLAJZaC7s0OPMPcICaOLGGyoPu2P90xWr1/dkx1LPy"
