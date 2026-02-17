@@ -21,29 +21,18 @@ export const AnimalForm = ({ onSubmit, onCancel, initial }: Props) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "400px" }}
-    >
-      <div>
+    <form onSubmit={handleSubmit} className="app-form">
+      <div className="form-field">
         <label>Nombre</label>
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+        <input value={name} onChange={(e) => setName(e.target.value)} required />
       </div>
 
-      <div>
+      <div className="form-field">
         <label>Especie</label>
-        <input
-          value={species}
-          onChange={(e) => setSpecies(e.target.value)}
-          required
-        />
+        <input value={species} onChange={(e) => setSpecies(e.target.value)} required />
       </div>
 
-      <div>
+      <div className="form-field">
         <label>Edad</label>
         <input
           type="number"
@@ -53,37 +42,29 @@ export const AnimalForm = ({ onSubmit, onCancel, initial }: Props) => {
         />
       </div>
 
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            checked={vaccinated}
-            onChange={(e) => setVaccinated(e.target.checked)}
-          />
-          Vacunado
-        </label>
-      </div>
-
-      <div>
-        <label>Descripción</label>
+      <label className="form-field checkbox-field">
         <input
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          type="checkbox"
+          checked={vaccinated}
+          onChange={(e) => setVaccinated(e.target.checked)}
         />
+        Vacunado
+      </label>
+
+      <div className="form-field">
+        <label>Descripcion</label>
+        <input value={description} onChange={(e) => setDescription(e.target.value)} />
       </div>
 
-      <div>
+      <div className="form-field">
         <label>URL imagen</label>
-        <input
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-        />
+        <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
       </div>
 
-      <div style={{ display: "flex", gap: "1rem" }}>
+      <div className="form-actions">
         <button type="submit">Guardar</button>
         {onCancel && (
-          <button type="button" onClick={onCancel}>
+          <button type="button" className="btn-danger" onClick={onCancel}>
             Cancelar
           </button>
         )}

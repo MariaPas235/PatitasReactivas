@@ -54,13 +54,10 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "400px" }}
-    >
-      <h2>{mode === "login" ? "Iniciar sesión" : "Registro"}</h2>
+    <form onSubmit={handleSubmit} className="app-form">
+      <h2>{mode === "login" ? "Iniciar sesion" : "Registro"}</h2>
 
-      <div>
+      <div className="form-field">
         <label>Email</label>
         <input
           type="email"
@@ -73,7 +70,7 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
 
       {mode === "register" && (
         <>
-          <div>
+          <div className="form-field">
             <label>Nombre</label>
             <input
               type="text"
@@ -84,8 +81,8 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
             />
           </div>
 
-          <div>
-            <label>Nº Colegiado</label>
+          <div className="form-field">
+            <label>N. Colegiado</label>
             <input
               type="text"
               name="numberVet"
@@ -95,8 +92,8 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
             />
           </div>
 
-          <div>
-            <label>Teléfono</label>
+          <div className="form-field">
+            <label>Telefono</label>
             <input
               type="text"
               name="telefono"
@@ -106,7 +103,7 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
             />
           </div>
 
-          <div>
+          <div className="form-field">
             <label>Rol</label>
             <select
               name="role"
@@ -122,8 +119,8 @@ const AuthForm = ({ mode, onSubmit, loading = false }: Props) => {
         </>
       )}
 
-      <div>
-        <label>Contraseña</label>
+      <div className="form-field">
+        <label>Contrasena</label>
         <input
           type="password"
           name="password"

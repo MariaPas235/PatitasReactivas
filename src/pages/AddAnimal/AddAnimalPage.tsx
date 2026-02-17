@@ -9,24 +9,25 @@ const AddAnimalPage = () => {
   const session = authService.getSession();
   if (!session) return null;
 
-  // ✅ Función que maneja el submit del formulario
   const handleFormSubmit = (animalData: Omit<Animal, "id">) => {
-    // Llamada async dentro de la función sin marcarla como async
-    animalService.addAnimal(animalData)
-  .then(() => {
-    alert("Mascota creada correctamente");
-    navigate("/dashboard");
-  })
-  .catch((err) => {
-    console.error(err);
-    alert("Error al crear la mascota");
-  });
+    animalService
+      .addAnimal(animalData)
+      .then(() => {
+        alert("Mascota creada correctamente");
+        navigate("/dashboard");
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Error al crear la mascota");
+      });
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Crear nueva mascota</h1>
-      <AnimalForm onSubmit={handleFormSubmit} />
+    <div className="content-page">
+      <div className="surface-card">
+        <h1 className="page-title">Crear nueva mascota</h1>
+        <AnimalForm onSubmit={handleFormSubmit} />
+      </div>
     </div>
   );
 };

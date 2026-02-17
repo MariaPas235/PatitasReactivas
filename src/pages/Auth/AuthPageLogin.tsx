@@ -10,14 +10,17 @@ const AuthPageLogin = () => {
       await authService.login(data);
       navigate("/dashboard");
     } catch (error) {
-      console.error("Error al iniciar sesión:", error);
+      console.error("Error al iniciar sesion:", error);
     }
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
+    <div className="auth-page">
       <AuthForm mode="login" onSubmit={handleLogin} />
-      <p>¿No tienes cuenta? <button onClick={() => navigate("/register")} style={{ background: "none", border: "none", color: "#1976d2", cursor: "pointer", textDecoration: "underline" }}>Regístrate aquí</button></p>
+      <p className="auth-switch">
+        No tienes cuenta?{" "}
+        <button className="text-button" onClick={() => navigate("/register")}>Registrate aqui</button>
+      </p>
     </div>
   );
 };

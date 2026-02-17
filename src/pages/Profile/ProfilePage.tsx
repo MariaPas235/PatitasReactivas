@@ -10,9 +10,9 @@ const ProfilePage = () => {
   if (!session) return null;
 
   const handleSave = () => {
-    // Persistir en backend y actualizar sesión
     const updatedData = { name, telefono, numberVet };
-    authService.updateUser(session.user.id, updatedData)
+    authService
+      .updateUser(session.user.id, updatedData)
       .then((updatedUser) => {
         authService.saveSession({ token: session.token, user: updatedUser });
         alert("Perfil actualizado");
@@ -24,13 +24,24 @@ const ProfilePage = () => {
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Perfil</h1>
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem", maxWidth: "400px" }}>
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nombre" />
-        <input value={telefono} onChange={(e) => setTelefono(e.target.value)} placeholder="Teléfono" />
-        <input value={numberVet} onChange={(e) => setNumberVet(e.target.value)} placeholder="Número de veterinario" />
-        <button onClick={handleSave}>Guardar</button>
+    <div className="content-page">
+      <div className="surface-card">
+        <h1 className="page-title">Perfil</h1>
+        <form className="app-form" onSubmit={(e) => e.preventDefault()}>
+          <div className="form-field">
+            <label>Nombre</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nombre" />
+          </div>
+          <div className="form-field">
+            <label>Telefono</label>
+            <input value={telefono} onChange={(e) => setTelefono(e.target.value)} placeholder="Telefono" />
+          </div>
+          <div className="form-field">
+            <label>Numero de veterinario</label>
+            <input value={numberVet} onChange={(e) => setNumberVet(e.target.value)} placeholder="Numero de veterinario" />
+          </div>
+          <button type="button" onClick={handleSave}>Guardar</button>
+        </form>
       </div>
     </div>
   );

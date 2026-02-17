@@ -21,7 +21,6 @@ const DashboardPage = () => {
       .then(setAnimals)
       .catch(console.error)
       .finally(() => setLoading(false));
-
   }, [session]);
 
   if (!session) return <Navigate to="/" replace />;
@@ -31,9 +30,7 @@ const DashboardPage = () => {
   };
 
   const handleUpdated = (updated: Animal) => {
-    setAnimals((prev) =>
-      prev.map((a) => (a.id === updated.id ? updated : a))
-    );
+    setAnimals((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
   };
 
   const handleLogout = () => {
@@ -42,46 +39,17 @@ const DashboardPage = () => {
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "2rem",
-        }}
-      >
+    <div className="content-page">
+      <div className="dashboard-header">
         <h1>Mascotas de {session.user.name}</h1>
-
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: "0.5rem 1rem",
-            backgroundColor: "#f44336",
-            color: "white",
-            border: "none",
-            borderRadius: 4,
-            cursor: "pointer",
-          }}
-        >
-          Cerrar sesión
-        </button>
+        <button className="btn-danger" onClick={handleLogout}>Cerrar sesion</button>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "1rem",
-          marginTop: "1rem",
-          justifyContent: loading ? "center" : "flex-start",
-          minHeight: "200px",
-        }}
-      >
+      <div className={`dashboard-grid ${loading ? "is-loading" : ""}`.trim()}>
         {loading ? (
           <Loading />
         ) : animals.length === 0 ? (
-          <p>No tienes mascotas registradas.</p>
+          <p className="empty-state">No tienes mascotas registradas.</p>
         ) : (
           animals.map((animal) => (
             <AnimalCard

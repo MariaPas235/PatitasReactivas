@@ -17,7 +17,7 @@ export const AnimalCard = ({ animal, onDeleted, onUpdated }: Props) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm(`¿Eliminar ${animal.name}?`)) return;
+    if (!confirm(`Eliminar ${animal.name}?`)) return;
     setLoading(true);
     try {
       await animalService.deleteAnimal(animal.id);
@@ -45,35 +45,20 @@ export const AnimalCard = ({ animal, onDeleted, onUpdated }: Props) => {
   };
 
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        padding: "1rem",
-        width: "200px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <img
-        src={animal.imageUrl}
-        alt={animal.name}
-        style={{ width: "100%", height: "120px", objectFit: "cover", borderRadius: 8 }}
-      />
-      <h3 style={{ margin: "0.5rem 0" }}>{animal.name}</h3>
+    <div className="animal-card">
+      <img src={animal.imageUrl} alt={animal.name} className="animal-thumb" />
+      <h3 className="animal-name">{animal.name}</h3>
 
-      {/* Botones */}
-      <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
+      <div className="card-actions">
         <button onClick={() => setEditing(true)} disabled={updating}>
           {editing ? "Cerrar" : "Editar"}
         </button>
-        <button onClick={handleDelete} disabled={loading}>
+        <button className="btn-danger" onClick={handleDelete} disabled={loading}>
           {loading ? "Eliminando..." : "Eliminar"}
         </button>
         <button onClick={() => setShowDetails(true)}>Ver detalles</button>
       </div>
 
-      {/* Modal para editar */}
       {editing && (
         <Modal onClose={() => setEditing(false)}>
           <h2>Editar {animal.name}</h2>
@@ -92,20 +77,15 @@ export const AnimalCard = ({ animal, onDeleted, onUpdated }: Props) => {
         </Modal>
       )}
 
-      {/* Modal para ver detalles */}
       {showDetails && (
         <Modal onClose={() => setShowDetails(false)}>
           <h2>{animal.name}</h2>
-          <img
-            src={animal.imageUrl}
-            alt={animal.name}
-            style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: 8, marginBottom: "1rem" }}
-          />
+          <img src={animal.imageUrl} alt={animal.name} className="animal-cover" />
           <p><strong>Especie:</strong> {animal.species}</p>
-          <p><strong>Edad:</strong> {animal.age} años</p>
-          <p><strong>Vacunado:</strong> {animal.vaccinated ? "Sí" : "No"}</p>
-          {animal.description && <p><strong>Descripción:</strong> {animal.description}</p>}
-          <button onClick={() => setShowDetails(false)} style={{ marginTop: "1rem" }}>Cerrar</button>
+          <p><strong>Edad:</strong> {animal.age} anos</p>
+          <p><strong>Vacunado:</strong> {animal.vaccinated ? "Si" : "No"}</p>
+          {animal.description && <p><strong>Descripcion:</strong> {animal.description}</p>}
+          <button onClick={() => setShowDetails(false)}>Cerrar</button>
         </Modal>
       )}
     </div>

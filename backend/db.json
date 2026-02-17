@@ -62,6 +62,15 @@
       "vaccinated": false,
       "description": "piopio",
       "imageUrl": "https://gaherproga.com/img/cms/Cacatua2.jpg"
+    },
+    {
+      "id": "a8",
+      "name": "Pepi",
+      "species": "pajaroto",
+      "age": 22,
+      "vaccinated": false,
+      "description": "pajaro grande",
+      "imageUrl": "https://f.fcdn.app/imgs/6ed89b/universobinario.com/ubinuy/5f67/original/catalogo/7896484130493-001_2/1500-1500/figura-pajaroto-pocoyo-vinilo-super-esponjoso-001.jpg"
     }
   ],
   "users": [
@@ -180,6 +189,26 @@
         }
       ],
       "passwordHash": "$2b$10$fF1dDqgtLhimLAJZaC7s0OPMPcICaOLGGyoPu2P90xWr1/dkx1LPy"
+    },
+    {
+      "id": 7,
+      "email": "pru5@gmail.com",
+      "name": "Mariaaa",
+      "telefono": "57463746355",
+      "numberVet": "34",
+      "role": "auxiliary",
+      "animals": [
+        {
+          "id": "a8",
+          "name": "Pepi",
+          "species": "pajaroto",
+          "age": 22,
+          "vaccinated": false,
+          "description": "pajaro grande",
+          "imageUrl": "https://f.fcdn.app/imgs/6ed89b/universobinario.com/ubinuy/5f67/original/catalogo/7896484130493-001_2/1500-1500/figura-pajaroto-pocoyo-vinilo-super-esponjoso-001.jpg"
+        }
+      ],
+      "passwordHash": "$2b$10$T4Qma1//WQvvGtSmQKniNu5yB1uNdeI02m4fInagv9JfLZzBGPuEK"
     }
   ]
 }
