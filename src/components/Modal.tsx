@@ -1,4 +1,5 @@
 import React from "react";
+import { createPortal } from "react-dom";
 
 type Props = {
   children: React.ReactNode;
@@ -6,16 +7,15 @@ type Props = {
 };
 
 export const Modal = ({ children, onClose }: Props) => {
-  return (
+  const modal = (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-body" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          {onClose && <button onClick={onClose}>Cerrar</button>}
-        </div>
         {children}
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 };
 
 export default Modal;

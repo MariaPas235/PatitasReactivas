@@ -82,7 +82,7 @@ export const AnimalCard = ({ animal, onDeleted, onUpdated }: Props) => {
           <h2>{animal.name}</h2>
           <img src={animal.imageUrl} alt={animal.name} className="animal-cover" />
           <p><strong>Especie:</strong> {animal.species}</p>
-          <p><strong>Edad:</strong> {animal.age} anos</p>
+          <p><strong>Edad:</strong> {animal.age} años</p>
           <p><strong>Vacunado:</strong> {animal.vaccinated ? "Si" : "No"}</p>
           {animal.description && <p><strong>Descripcion:</strong> {animal.description}</p>}
           <button onClick={() => setShowDetails(false)}>Cerrar</button>

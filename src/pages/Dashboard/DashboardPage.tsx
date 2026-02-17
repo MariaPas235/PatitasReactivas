@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { authService } from "../../services/authService";
 import { animalService } from "../../services/animalService";
 import { AnimalCard } from "../../components/AnimalCard";
@@ -8,7 +8,6 @@ import type { Animal } from "../../types/Animals";
 
 const DashboardPage = () => {
   const session = authService.getSession();
-  const navigate = useNavigate();
 
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,16 +32,10 @@ const DashboardPage = () => {
     setAnimals((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
   };
 
-  const handleLogout = () => {
-    authService.logout();
-    navigate("/", { replace: true });
-  };
-
   return (
     <div className="content-page">
       <div className="dashboard-header">
         <h1>Mascotas de {session.user.name}</h1>
-        <button className="btn-danger" onClick={handleLogout}>Cerrar sesion</button>
       </div>
 
       <div className={`dashboard-grid ${loading ? "is-loading" : ""}`.trim()}>
