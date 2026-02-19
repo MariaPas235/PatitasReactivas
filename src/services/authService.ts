@@ -1,6 +1,6 @@
 import type { AuthResponse, User } from "../types/Auth";
 
-const API_URL = "http://localhost:3000/auth"; // tu backend
+const API_URL = "http://localhost:3000/auth"; 
 const API_BASE = "http://localhost:3000";
 
 type LoginPayload = {
@@ -18,10 +18,16 @@ class AuthService {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) throw new Error("Error en login");
+    if (!res.ok) {
+      if (res.status === 401) {
+        throw new Error("Las credenciales no son validas");
+      }
+      const message = await this.extractErrorMessage(res, "Error al iniciar sesion");
+      throw new Error(message);
+    }
 
     const auth: AuthResponse = await res.json();
-    this.saveSession(auth); // 🔹 guarda sesión
+    this.saveSession(auth); 
     return auth;
   }
 
@@ -32,10 +38,16 @@ class AuthService {
       body: JSON.stringify(data),
     });
 
-    if (!res.ok) throw new Error("Error en registro");
+    if (!res.ok) {
+      if (res.status === 409) {
+        throw new Error("El email ya se encuentra registrado en la base de datos");
+      }
+      const message = await this.extractErrorMessage(res, "Error en registro");
+      throw new Error(message);
+    }
 
     const auth: AuthResponse = await res.json();
-    this.saveSession(auth); // 🔹 guarda sesión
+    this.saveSession(auth); 
     return auth;
   }
 
@@ -58,12 +70,11 @@ class AuthService {
     this.notifySubscribers(auth);
   }
 
-  // --- simple subscription API so UI can react to session changes ---
+ 
   private subscribers: Array<(auth: AuthResponse | null) => void> = [];
 
   subscribe(cb: (auth: AuthResponse | null) => void) {
     this.subscribers.push(cb);
-    // immediately call with current value
     try {
       cb(this.getSession());
     } catch (e) {
@@ -86,7 +97,7 @@ class AuthService {
 
   async updateUser(userId: number, data: Partial<User>): Promise<User> {
     const res = await fetch(`${API_BASE}/users/${userId}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
@@ -94,6 +105,28 @@ class AuthService {
     if (!res.ok) throw new Error("Error actualizando usuario");
 
     return res.json();
+  }
+
+  async validateSession(): Promise<boolean> {
+    const session = this.getSession();
+
+    if (!session) return false;
+
+    try {
+      const res = await fetch(`${API_BASE}/users/${session.user.id}`);
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  private async extractErrorMessage(res: Response, fallback: string): Promise<string> {
+    try {
+      const data = (await res.json()) as { message?: string };
+      return data.message?.trim() || fallback;
+    } catch {
+      return fallback;
+    }
   }
 }
 

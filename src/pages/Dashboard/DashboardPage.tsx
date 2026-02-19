@@ -19,7 +19,7 @@ const DashboardPage = () => {
       .getUserAnimals(session.user.id)
       .then(setAnimals)
       .catch(console.error)
-      .finally(() => setLoading(false));
+      .finally(() => setLoading(false));    
   }, [session]);
 
   if (!session) return <Navigate to="/" replace />;
@@ -36,6 +36,7 @@ const DashboardPage = () => {
     <div className="content-page">
       <div className="dashboard-header">
         <h1>Mascotas de {session.user.name}</h1>
+
       </div>
 
       <div className={`dashboard-grid ${loading ? "is-loading" : ""}`.trim()}>

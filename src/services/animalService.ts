@@ -4,7 +4,7 @@ import { authService } from "./authService";
 const API_URL = "http://localhost:3000";
 
 class AnimalService {
-  // --- NUEVA FUNCIÓN ---
+  
   async getAnimalById(id: string): Promise<Animal> {
     const res = await fetch(`${API_URL}/animals/${id}`);
     
@@ -15,7 +15,7 @@ class AnimalService {
     
     return res.json();
   }
-  // -----------------------
+  
 
   async addAnimal(animal: Omit<Animal, "id">): Promise<Animal> {
     const session = authService.getSession();

@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { authService } from "../services/authService";
+import Button from "./Button";
 
 const PrivateLayout = () => {
   const navigate = useNavigate();
@@ -24,9 +25,9 @@ const PrivateLayout = () => {
           Perfil
         </NavLink>
 
-        <button className="btn-danger nav-logout" onClick={handleLogout}>
+        <Button variant="danger" className="nav-logout" onClick={handleLogout}>
           Cerrar sesion
-        </button>
+        </Button>
       </nav>
 
       <Outlet />

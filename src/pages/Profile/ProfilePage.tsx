@@ -1,47 +1,49 @@
 import { useState } from "react";
+import AuthForm from "../../components/AuthForm";
 import { authService } from "../../services/authService";
+import { useToast } from "../../components/ToastProvider";
 
 const ProfilePage = () => {
   const session = authService.getSession();
-  const [name, setName] = useState(session?.user.name ?? "");
-  const [telefono, setTelefono] = useState(session?.user.telefono ?? "");
-  const [numberVet, setNumberVet] = useState(session?.user.numberVet ?? "");
+  const { showToast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   if (!session) return null;
 
-  const handleSave = () => {
-    const updatedData = { name, telefono, numberVet };
+  const handleSave = (updatedData: {
+    name: string;
+    telefono: string;
+    numberVet: string;
+  }) => {
+    setLoading(true);
     authService
       .updateUser(session.user.id, updatedData)
       .then((updatedUser) => {
         authService.saveSession({ token: session.token, user: updatedUser });
-        alert("Perfil actualizado");
+        showToast({ message: "Perfil actualizado", type: "success" });
       })
       .catch((err) => {
         console.error(err);
-        alert("Error actualizando perfil");
-      });
+        showToast({ message: "Error actualizando perfil", type: "error" });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
-    <div className="content-page">
+    <div className="content-page centered-page">
       <div className="surface-card">
         <h1 className="page-title">Perfil</h1>
-        <form className="app-form" onSubmit={(e) => e.preventDefault()}>
-          <div className="form-field">
-            <label>Nombre</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nombre" />
-          </div>
-          <div className="form-field">
-            <label>Telefono</label>
-            <input value={telefono} onChange={(e) => setTelefono(e.target.value)} placeholder="Telefono" />
-          </div>
-          <div className="form-field">
-            <label>Numero de veterinario</label>
-            <input value={numberVet} onChange={(e) => setNumberVet(e.target.value)} placeholder="Numero de veterinario" />
-          </div>
-          <button type="button" onClick={handleSave}>Guardar</button>
-        </form>
+        <AuthForm
+          mode="profile"
+          onSubmit={handleSave}
+          loading={loading}
+          hideTitle
+          initialValues={{
+            name: session.user.name,
+            telefono: session.user.telefono,
+            numberVet: session.user.numberVet,
+          }}
+        />
       </div>
     </div>
   );

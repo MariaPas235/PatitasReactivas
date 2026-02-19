@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Animal } from "../types/Animals";
+import Button from "./Button";
 
 type Props = {
   onSubmit: (animal: Omit<Animal, "id">) => void;
@@ -61,14 +62,16 @@ export const AnimalForm = ({ onSubmit, onCancel, initial }: Props) => {
         <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
       </div>
 
-      <div className="form-actions">
-        <button type="submit">Guardar</button>
-        {onCancel && (
-          <button type="button" className="btn-danger" onClick={onCancel}>
+      {onCancel ? (
+        <div className="form-actions">
+          <Button type="submit">Guardar</Button>
+          <Button type="button" variant="danger" onClick={onCancel}>
             Cancelar
-          </button>
-        )}
-      </div>
+          </Button>
+        </div>
+      ) : (
+        <Button type="submit">Guardar</Button>
+      )}
     </form>
   );
 };

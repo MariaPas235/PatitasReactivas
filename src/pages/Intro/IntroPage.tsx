@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
 
 const IntroPage = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   return (
     <div className="intro-page">
@@ -11,8 +12,8 @@ const IntroPage = () => {
       </p>
 
       <div className="intro-actions">
-        <button onClick={() => navigate("/login")}>Iniciar sesion</button>
-        <button onClick={() => navigate("/register")}>Registrarse</button>
+        <Button onClick={() => navigate("/login")}>Iniciar sesion</Button> 
+        <Button onClick={() => navigate("/register")}>Registrarse</Button>
       </div>
     </div>
   );

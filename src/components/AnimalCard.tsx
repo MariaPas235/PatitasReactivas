@@ -3,6 +3,8 @@ import { animalService } from "../services/animalService";
 import { useState } from "react";
 import { AnimalForm } from "./AnimalForm";
 import Modal from "./Modal";
+import { useToast } from "./ToastProvider";
+import Button from "./Button";
 
 type Props = {
   animal: Animal;
@@ -11,40 +13,46 @@ type Props = {
 };
 
 export const AnimalCard = ({ animal, onDeleted, onUpdated }: Props) => {
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [editing, setEditing] = useState(false);
   const [updating, setUpdating] = useState(false);
-  
-  // Estados para los detalles detallados
+
   const [showDetails, setShowDetails] = useState(false);
   const [detailedAnimal, setDetailedAnimal] = useState<Animal | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
-  // Función para cargar los datos del servidor por ID
   const fetchDetails = async () => {
-    setLoadingDetails(true);
-    setShowDetails(true);
-    try {
-      const data = await animalService.getAnimalById(animal.id);
-      setDetailedAnimal(data);
-    } catch (err) {
-      console.error(err);
-      alert("No se pudo obtener la información actualizada.");
-      setShowDetails(false); // Cerramos el modal si falla
-    } finally {
-      setLoadingDetails(false);
-    }
-  };
+  
+  setDetailedAnimal(null); 
+  
+  setLoadingDetails(true);
+  setShowDetails(true);
 
-  const handleDelete = async () => {
-    if (!confirm(`Eliminar ${animal.name}?`)) return;
+  try {
+    const data = await animalService.getAnimalById(animal.id);
+    setDetailedAnimal(data);
+  } catch (err) {
+    console.error(err);
+    showToast({ message: "No se pudo obtener la información", type: "error" });
+    setShowDetails(false);
+  } finally {
+    setLoadingDetails(false);
+  }
+};
+
+  const handleDeleteConfirm = async () => {
     setLoading(true);
+
     try {
       await animalService.deleteAnimal(animal.id);
       onDeleted?.(animal.id);
+      showToast({ message: "Mascota eliminada", type: "success" });
+      setConfirmingDelete(false);
     } catch (err) {
       console.error(err);
-      alert("Error eliminando la mascota");
+      showToast({ message: "Error eliminando la mascota", type: "error" });
     } finally {
       setLoading(false);
     }
@@ -52,13 +60,15 @@ export const AnimalCard = ({ animal, onDeleted, onUpdated }: Props) => {
 
   const handleUpdate = async (data: Omit<Animal, "id">) => {
     setUpdating(true);
+
     try {
       const updated = await animalService.updateAnimal(animal.id, data);
       onUpdated?.(updated);
       setEditing(false);
+      showToast({ message: "Mascota actualizada", type: "success" });
     } catch (err) {
       console.error(err);
-      alert("Error actualizando la mascota");
+      showToast({ message: "Error actualizando la mascota", type: "error" });
     } finally {
       setUpdating(false);
     }
@@ -70,16 +80,15 @@ export const AnimalCard = ({ animal, onDeleted, onUpdated }: Props) => {
       <h3 className="animal-name">{animal.name}</h3>
 
       <div className="card-actions">
-        <button onClick={() => setEditing(true)} disabled={updating}>
+        <Button onClick={() => setEditing(true)} disabled={updating}>
           {editing ? "Cerrar" : "Editar"}
-        </button>
-        <button className="btn-danger" onClick={handleDelete} disabled={loading}>
+        </Button>
+        <Button variant="danger" onClick={() => setConfirmingDelete(true)} disabled={loading}>
           {loading ? "Eliminando..." : "Eliminar"}
-        </button>
-        {/* Ahora llamamos a la función que busca por ID */}
-        <button onClick={fetchDetails}>
+        </Button>
+        <Button onClick={fetchDetails}>
           {loadingDetails ? "Cargando..." : "Ver detalles"}
-        </button>
+        </Button>
       </div>
 
       {editing && (
@@ -108,19 +117,45 @@ export const AnimalCard = ({ animal, onDeleted, onUpdated }: Props) => {
             <>
               <h2>{detailedAnimal.name}</h2>
               <img src={detailedAnimal.imageUrl} alt={detailedAnimal.name} className="animal-cover" />
-              <p><strong>Especie:</strong> {detailedAnimal.species}</p>
-              <p><strong>Edad:</strong> {detailedAnimal.age} años</p>
-              <p><strong>Vacunado:</strong> {detailedAnimal.vaccinated ? "Si" : "No"}</p>
+              <p>
+                <strong>Especie:</strong> {detailedAnimal.species}
+              </p>
+              <p>
+                <strong>Edad:</strong> {detailedAnimal.age} años
+              </p>
+              <p>
+                <strong>Vacunado:</strong> {detailedAnimal.vaccinated ? "Si" : "No"}
+              </p>
               {detailedAnimal.description && (
-                <p><strong>Descripción:</strong> {detailedAnimal.description}</p>
+                <p>
+                  <strong>Descripcion:</strong> {detailedAnimal.description}
+                </p>
               )}
-              <button onClick={() => setShowDetails(false)}>Cerrar</button>
+              <Button onClick={() => setShowDetails(false)}>Cerrar</Button>
             </>
           ) : (
             <p>Error al cargar los datos.</p>
           )}
         </Modal>
       )}
+
+      {confirmingDelete && (
+        <Modal onClose={loading ? undefined : () => setConfirmingDelete(false)}>
+          <h2>Confirmar eliminacion</h2>
+          <p className="modal-text">
+            Vas a eliminar a <strong>{animal.name}</strong>. Esta accion no se puede deshacer.
+          </p>
+          <div className="modal-actions">
+            <Button type="button" onClick={() => setConfirmingDelete(false)} disabled={loading}>
+              Cancelar
+            </Button>
+            <Button type="button" variant="danger" onClick={handleDeleteConfirm} disabled={loading}>
+              {loading ? "Eliminando..." : "Si, eliminar"}
+            </Button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
+

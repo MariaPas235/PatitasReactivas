@@ -11,11 +11,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// json-server router para persistencia rápida
 const router = jsonServer.router("db.json");
 const db = router.db;
 
-// Función para firmar JWT
 function signToken(user) {
   return jwt.sign(
     {
@@ -56,53 +54,32 @@ app.post("/auth/register", async (req, res) => {
   };
 
   users.push(newUser).write();
-
   const token = signToken(newUser);
 
   return res.status(201).json({
     token,
-    user: { ...newUser, password: password }, // devuelve password plano por ahora
+    user: { id: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role },
   });
 });
 
 // --- LOGIN ---
 app.post("/auth/login", async (req, res) => {
   const { email, password } = req.body ?? {};
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "Faltan email o password" });
-  }
-
   const user = db.get("users").find({ email }).value();
-  if (!user) return res.status(401).json({ message: "Credenciales inválidas" });
+  
+  if (!user || !user.passwordHash) return res.status(401).json({ message: "Credenciales inválidas" });
 
-  // Verificar que el usuario tiene passwordHash
-  if (!user.passwordHash) {
-    return res.status(401).json({ message: "Credenciales inválidas" });
-  }
-
-  try {
-    const ok = await bcrypt.compare(password, user.passwordHash);
-    if (!ok) return res.status(401).json({ message: "Credenciales inválidas" });
-  } catch (err) {
-    console.error("Error en bcrypt.compare:", err);
-    return res.status(401).json({ message: "Credenciales inválidas" });
-  }
+  const ok = await bcrypt.compare(password, user.passwordHash);
+  if (!ok) return res.status(401).json({ message: "Credenciales inválidas" });
 
   const token = signToken(user);
-
-  // No devolver password en la respuesta, solo el usuario sin ese campo
   const userResponse = { ...user };
   delete userResponse.passwordHash;
-  delete userResponse.password;
 
-  return res.json({
-    token,
-    user: userResponse,
-  });
+  return res.json({ token, user: userResponse });
 });
 
-// --- AÑADIR ANIMAL ---
+// --- AÑADIR ANIMAL (CON ID SEGURO) ---
 app.post("/animals", (req, res) => {
   const { name, species, age, vaccinated, description, imageUrl, userId } = req.body;
 
@@ -114,8 +91,17 @@ app.post("/animals", (req, res) => {
   const user = users.find({ id: userId }).value();
   if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
 
+  // Lógica para encontrar el ID más alto y sumar 1
   const animalsCollection = db.get("animals");
-  const nextId = `a${(animalsCollection.size().value() ?? 0) + 1}`; // id tipo a1, a2...
+  const currentAnimals = animalsCollection.value() || [];
+  
+  const maxNumber = currentAnimals.reduce((max, animal) => {
+    // Extraemos el número después de la 'a' (ej: de 'a12' sacamos 12)
+    const num = parseInt(animal.id.substring(1));
+    return !isNaN(num) && num > max ? num : max;
+  }, 0);
+
+  const nextId = `a${maxNumber + 1}`;
 
   const newAnimal = {
     id: nextId,
@@ -127,17 +113,13 @@ app.post("/animals", (req, res) => {
     imageUrl: imageUrl || "",
   };
 
-  // 1️⃣ Guardar en colección global
+  // 1. Guardar en colección global
   animalsCollection.push(newAnimal).write();
 
-  // 2️⃣ Asegurar que user.animals es un array antes de pushear
-  if (!Array.isArray(user.animals)) {
-    user.animals = [];
-  }
-  
-  // 3️⃣ Guardar dentro del usuario (objeto completo)
-  user.animals.push(newAnimal);
-  users.find({ id: userId }).assign(user).write();
+  // 2. Guardar en el array del usuario
+  if (!Array.isArray(user.animals)) user.animals = [];
+  user.animals.push(newAnimal); // Guardamos el objeto completo para mantener tu estructura actual
+  users.find({ id: userId }).assign({ animals: user.animals }).write();
 
   return res.status(201).json(newAnimal);
 });
@@ -146,28 +128,22 @@ app.post("/animals", (req, res) => {
 app.delete("/animals/:id", (req, res) => {
   const { id } = req.params;
 
-  const animal = db.get("animals").find({ id }).value();
-  if (!animal) return res.status(404).json({ message: "Animal no encontrado" });
+  const animalExists = db.get("animals").find({ id }).value();
+  if (!animalExists) return res.status(404).json({ message: "Animal no encontrado" });
 
-  // eliminar de colección global
+  // Eliminar de colección global
   db.get("animals").remove({ id }).write();
 
-  // eliminar de todos los usuarios (maneja tanto IDs como objetos completos)
-  db.get("users")
-    .value()
-    .forEach((user) => {
-      if (Array.isArray(user.animals)) {
-        user.animals = user.animals.filter((a) => {
-          // Si es un objeto animal, compara por id
-          if (typeof a === "object" && a !== null) {
-            return a.id !== id;
-          }
-          // Si es un string (id), compara directamente
-          return a !== id;
-        });
-        db.get("users").find({ id: user.id }).assign(user).write();
-      }
-    });
+  // Eliminar de todos los usuarios donde aparezca
+  db.get("users").value().forEach((user) => {
+    if (Array.isArray(user.animals)) {
+      const filtered = user.animals.filter((a) => {
+        const animalId = typeof a === "object" ? a.id : a;
+        return animalId !== id;
+      });
+      db.get("users").find({ id: user.id }).assign({ animals: filtered }).write();
+    }
+  });
 
   return res.json({ message: "Animal eliminado" });
 });
@@ -175,109 +151,48 @@ app.delete("/animals/:id", (req, res) => {
 // --- ACTUALIZAR ANIMAL ---
 app.put("/animals/:id", (req, res) => {
   const { id } = req.params;
-  const { name, species, age, vaccinated, description, imageUrl } = req.body ?? {};
+  const data = req.body;
 
   const animal = db.get("animals").find({ id }).value();
   if (!animal) return res.status(404).json({ message: "Animal no encontrado" });
 
-  const updatedAnimal = {
-    id,
-    name: name ?? animal.name,
-    species: species ?? animal.species,
-    age: age ?? animal.age,
-    vaccinated: vaccinated ?? animal.vaccinated,
-    description: description ?? animal.description,
-    imageUrl: imageUrl ?? animal.imageUrl,
-  };
+  const updatedAnimal = { ...animal, ...data, id }; // Aseguramos que el ID no cambie
 
-  // actualizar colección global
+  // Actualizar en colección global
   db.get("animals").find({ id }).assign(updatedAnimal).write();
 
-  // actualizar cualquier animal embebido dentro de users[].animals
-  db.get("users")
-    .value()
-    .forEach((user) => {
-      if (!Array.isArray(user.animals)) return;
-
-      // Resolver cada entrada: si es string (id) intentamos obtener el objeto global,
-      // si es objeto lo usamos tal cual. Filtramos nulls.
-      const resolved = user.animals
-        .map((a) => {
-          if (!a) return null;
-          if (typeof a === "object") return a;
-          if (typeof a === "string") {
-            return db.get("animals").find({ id: a }).value() || null;
-          }
-          return null;
-        })
-        .filter(Boolean);
-
-      // Reemplazar la entrada que coincide con el id por la versión actualizada
-      const replaced = resolved.map((a) => (a.id === id ? updatedAnimal : a));
-
-      // Deduplicar por id, preservando el orden (evita repetir la misma mascota varias veces)
-      const seen = new Set();
-      const dedup = [];
-      replaced.forEach((a) => {
-        if (!a || !a.id) return;
-        if (seen.has(a.id)) return;
-        seen.add(a.id);
-        dedup.push(a);
+  // Actualizar en todos los usuarios
+  db.get("users").value().forEach((user) => {
+    if (Array.isArray(user.animals)) {
+      const updatedList = user.animals.map((a) => {
+        const animalId = typeof a === "object" ? a.id : a;
+        return animalId === id ? updatedAnimal : a;
       });
-
-      user.animals = dedup;
-      db.get("users").find({ id: user.id }).assign(user).write();
-    });
+      db.get("users").find({ id: user.id }).assign({ animals: updatedList }).write();
+    }
+  });
 
   return res.json(updatedAnimal);
 });
 
-// --- GET usuario por ID ---
-app.get("/users/:id", (req, res) => {
+// --- GET ANIMAL POR ID ---
+app.get("/animals/:id", (req, res) => {
+  const { id } = req.params;
+  const animal = db.get("animals").find({ id }).value();
+  if (!animal) return res.status(404).json({ message: "No encontrado" });
+  res.json(animal);
+});
+
+// --- GET ANIMALES DE UN USUARIO ---
+app.get("/users/:id/animals", (req, res) => {
   const { id } = req.params;
   const user = db.get("users").find({ id: parseInt(id) }).value();
   if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
-  res.json(user);
+  res.json(user.animals || []);
 });
 
-// --- GET usuarios y animales (para tests) ---
-app.get("/test/users", (req, res) => {
-  const users = db.get("users").value();
-  res.json(users);
-});
-
-app.get("/test/animals", (req, res) => {
-  const animals = db.get("animals").value();
-  res.json(animals);
-});
-
-// --- ACTUALIZAR USUARIO ---
-app.put("/users/:id", (req, res) => {
-  const { id } = req.params;
-  const { name, telefono, numberVet } = req.body ?? {};
-
-  const user = db.get("users").find({ id: parseInt(id) }).value();
-  if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
-
-  const updated = {
-    ...user,
-    name: name ?? user.name,
-    telefono: telefono ?? user.telefono,
-    numberVet: numberVet ?? user.numberVet,
-  };
-
-  db.get("users").find({ id: user.id }).assign(updated).write();
-
-  // También actualizar animals embebidos si es necesario: aquí no cambiamos animals
-
-  return res.json(updated);
-});
-
-// json-server router para CRUD general (debe ir después de nuestras rutas personalizadas)
 app.use(router);
 
-// Levantar servidor
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
-
