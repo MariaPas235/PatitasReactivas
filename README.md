@@ -4,31 +4,31 @@ Aplicación web para la gestión de mascotas en clínica veterinaria, construida
 
 ## Autor
 
-- **Nombre:** Maria Pastrana Moreno 
-- **Repositorio:** `patitasReactivas2`
+- **Nombre:** Maria Pastrana Moreno
+- **Repositorio:** https://github.com/MariaPas235/PatitasReactivas.git 
 
-## Tecnolog�as
+## Tecnologías
 
 - Frontend: React 19, TypeScript, Vite, React Router
 - Backend: Express, JSON Server, JWT, bcrypt
-- Comunicaci�n: Fetch API
+- Comunicación: Fetch API
 
 ## Estructura del proyecto
 
 ```text
 PatitasReactivas/
   src/                # Frontend
-  backend/            # API + base de datos mock (db.json)
+  backend/            # API + base de datos (db.json)
   docker-compose.yml  # Levantar backend en contenedor
 ```
 
-## Pasos de instalaci�n
+## Pasos de instalación
 
 ### 1) Clonar el repositorio
 
 ```bash
 git clone <URL_DEL_REPO>
-cd patitasReactivas2/PatitasReactivas
+cd PatitasReactivas
 ```
 
 ### 2) Instalar dependencias del frontend
@@ -37,27 +37,12 @@ cd patitasReactivas2/PatitasReactivas
 npm install
 ```
 
-### 3) Instalar dependencias del backend
+### 3) Ejecutar backend
+
+Opción recomendada con Docker:
 
 ```bash
-cd backend
-npm install
-cd ..
-```
-
-### 4) Ejecutar backend
-
-Opci�n A (recomendada con Docker):
-
-```bash
-docker compose up -d
-```
-
-Opci�n B (local sin Docker):
-
-```bash
-cd backend
-node server.js
+docker compose up --build
 ```
 
 El backend queda disponible en: `http://localhost:3000`
@@ -79,55 +64,29 @@ Este proyecto usa variables de entorno en el backend:
 | `PORT`       | Puerto de la API      | `3000`              |
 | `JWT_SECRET` | Clave para firmar JWT | `tu-secreto-seguro` |
 
-Ejemplo (`backend/.env`):
-
-```env
-PORT=3000
-JWT_SECRET=mi-codigo-secreto
-```
-
-Nota: actualmente el frontend consume la API en `http://localhost:3000` (configurado en servicios).
-
 ## Usuario de prueba
 
 Si se usa la base `backend/db.json` incluida en el proyecto, puedes probar con:
 
-- **Email:** `hola2@gmail.com`
-- **Password:** `2345`
+- **Email:** `prueba3@gmail.com`
+- **Password:** 1234
 
-Si ese usuario fue modificado, puedes crear uno nuevo desde `/register`.
+Si no, puedes crear uno nuevo desde `/register`.
 
-## Checklist final de requisitos m�nimos cumplidos
+## Checklist final de requisitos mínimos cumplidos
 
-- [X] P�gina p�blica de inicio/presentaci�n (`/`)
-- [X] P�gina p�blica de login para obtener JWT (`/login`)
+- [X] Página pública de inicio/presentación (`/`)
+- [X] Página pública de login para obtener JWT (`/login`)
 - [X] Almacenamiento del JWT de forma adecuada (`localStorage`, clave `auth`)
 - [X] Rutas protegidas (dashboard, alta y perfil)
-- [X] Bloqueo de acceso a p�ginas privadas sin autenticaci�n
-- [X] Redirecci�n al login cuando corresponde
-- [X] P�gina 404 para rutas inexistentes (`*`)
+- [X] Bloqueo de acceso a páginas privadas sin autenticación
+- [X] Redirección al login cuando corresponde
+- [X] Página 404 para rutas inexistentes (`*`)
 - [X] Listado de elementos de la entidad (GET mascotas por usuario)
 - [X] Consulta de detalle de un elemento (GET `/animals/:id`)
 - [X] Alta de nuevo elemento (POST `/animals`)
-- [X] Edici�n de elemento existente (PUT `/animals/:id`)
-- [X] Eliminaci�n de elementos (DELETE `/animals/:id`)
-- [X] Gesti�n visible de errores de API (toasts y mensajes)
+- [X] Edición de elemento existente (PUT `/animals/:id`)
+- [X] Eliminación de elementos (DELETE `/animals/:id`)
+- [X] Gestión visible de errores de API (toasts y mensajes)
 - [X] Estados de carga (loading en dashboard, detalles y acciones)
-- [X] Estados vac�os (mensaje cuando no hay mascotas)
-
-## Scripts �tiles
-
-Frontend (`/`):
-
-```bash
-npm run dev
-npm run build
-npm run preview
-npm run lint
-```
-
-Backend (`/backend`):
-
-```bash
-node server.js
-```
+- [X] Estados vacíos (mensaje cuando no hay mascotas)
